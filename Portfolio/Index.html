@@ -4,46 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mebrie</title>
-    <!-- UNICONS -->
+    <meta name="description" content="Mebrie Awoke | AI Engineer and Machine Learning Developer building intelligent products.">
+    <title>Mebrie Awoke | Advanced Portfolio</title>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-    <!-- CSS -->
     <link rel="stylesheet" href="./style.css">
-    <!-- Add favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <!-- --------------- HEADER --------------- -->
         <nav id="header">
-            <div class="nav-logo">
+            <a href="#home" class="nav-logo">
                 <p class="nav-name">Mebrie Awoke</p>
                 <span>.</span>
-            </div>
+            </a>
             <div class="nav-menu" id="myNavMenu">
                 <ul class="nav_menu_list">
-                    <li class="nav_list">
-                        <a href="#home" class="nav-link active-link">Home</a>
-                        <div class="circle"></div>
-                    </li>
-                    <li class="nav_list">
-                        <a href="#about" class="nav-link">About</a>
-                        <div class="circle"></div>
-                    </li>
-                    <li class="nav_list">
-                        <a href="#projects" class="nav-link">Projects</a>
-                        <div class="circle"></div>
-                    </li>
-                    <li class="nav_list">
-                        <a href="#contact" class="nav-link">Contact</a>
-                        <div class="circle"></div>
-                    </li>
+                    <li class="nav_list"><a href="#home" class="nav-link active-link">Home</a></li>
+                    <li class="nav_list"><a href="#about" class="nav-link">About</a></li>
+                    <li class="nav_list"><a href="#services" class="nav-link">Services</a></li>
+                    <li class="nav_list"><a href="#projects" class="nav-link">Projects</a></li>
+                    <li class="nav_list"><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
             </div>
-            <div class="nav-button">
-                <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf">
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="uil uil-moon"></i>
+                </button>
+                <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf" class="nav-button">
                     <button class="btn">Download CV <i class="uil uil-file-alt"></i></button>
                 </a>
             </div>
@@ -52,104 +39,99 @@
             </div>
         </nav>
 
-
-        <!-- -------------- MAIN ---------------- -->
         <main class="wrapper">
-            <!-- -------------- FEATURED BOX ---------------- -->
             <section class="featured-box" id="home">
                 <div class="featured-text">
                     <div class="featured-text-card">
-                        <span>Mebrie</span>
+                        <span>AI Engineer • ML Developer</span>
                     </div>
                     <div class="featured-name">
-                        <p>I'm <span class="typedText"></span></p>
+                        <p>I build <span class="typedText"></span></p>
                     </div>
                     <div class="featured-text-info">
-                        <p>Machine Learning & Generative AI Developer.
-                            Building intelligent systems that understand, create, and innovate
-                        </p>
+                        <p>Crafting intelligent products with machine learning, generative AI, and scalable software engineering to solve real-world challenges.</p>
                     </div>
                     <div class="featured-text-btn">
-                        <button class="btn blue-btn">Hire Me</button>
-                        <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf">
-                            <button class="btn">Download CV <i class="uil uil-file-alt"></i></button>
-                        </a>
+                        <a href="#contact" class="btn blue-btn">Let’s Talk</a>
+                        <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf" class="btn">Download CV <i class="uil uil-file-alt"></i></a>
                     </div>
                     <div class="social_icons">
-                        <div class="icon"><i class="uil uil-instagram"></i></div>
-                        <div class="icon"><i class="uil uil-linkedin-alt"></i></div>
-                        <div class="icon"><i class="uil uil-twitter"></i></div>
-                        <div class="icon"><i class="uil uil-github-alt"></i></div>
+                        <a class="icon" href="#" aria-label="Instagram"><i class="uil uil-instagram"></i></a>
+                        <a class="icon" href="#" aria-label="LinkedIn"><i class="uil uil-linkedin-alt"></i></a>
+                        <a class="icon" href="#" aria-label="Twitter"><i class="uil uil-twitter"></i></a>
+                        <a class="icon" href="#" aria-label="GitHub"><i class="uil uil-github-alt"></i></a>
                     </div>
-                </div>
-                <div class="featured-image">
-                    <div class="image">
-                        <img src="./profile4.png" alt="avatar">
-                    </div>
-                </div>
-                <div class="scroll-icon-box">
-                    <a href="#about" class="scroll-btn">
-                        <i class="uil uil-mouse-alt"></i>
-                        <p>Scroll Down</p>
-                    </a>
                 </div>
 
+                <div class="featured-image">
+                    <div class="image">
+                        <img src="./profile4.png" alt="Portrait of Mebrie Awoke">
+                        <div class="image-badge">Available for freelance</div>
+                    </div>
+                </div>
+
+                <a href="#about" class="scroll-btn">
+                    <i class="uil uil-mouse-alt"></i>
+                    <p>Explore More</p>
+                </a>
             </section>
-            <!-- -------------- ABOUT BOX ---------------- -->
+
+            <section class="stats-bar">
+                <div class="stat-card">
+                    <h3 data-count="15" data-suffix="+">0</h3>
+                    <p>Projects Delivered</p>
+                </div>
+                <div class="stat-card">
+                    <h3 data-count="3" data-suffix="+">0</h3>
+                    <p>Years of Experience</p>
+                </div>
+                <div class="stat-card">
+                    <h3 data-count="20" data-suffix="+">0</h3>
+                    <p>Technologies Mastered</p>
+                </div>
+                <div class="stat-card">
+                    <h3 data-count="100" data-suffix="%">0</h3>
+                    <p>Commitment to Quality</p>
+                </div>
+            </section>
+
             <section class="section" id="about">
                 <div class="top-header">
                     <h1>About Me</h1>
+                    <span>Building meaningful AI products with a human-centered approach</span>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="about-info">
-                            <h3>My introduction</h3>
-                            <p>Hi, I'm Mebrie Awoke, a passionate Machine Learning and Generative AI Developer.
-                                I build bridges between cutting-edge AI research and real-world applications.
-                                For the past 3 years, I've specialized in making complex AI systems practical,
-                                scalable, and impactful.
+                <div class="about-grid">
+                    <div class="about-info">
+                        <h3>My introduction</h3>
+                        <p>I’m Mebrie Awoke, a passionate AI engineer and machine learning developer who loves translating complex ideas into elegant, useful products. My work blends deep technical ability with product thinking to create intelligent systems that feel natural and impactful.</p>
+                        <div class="about-pills">
+                            <span>Generative AI</span>
+                            <span>Computer Vision</span>
+                            <span>NLP</span>
+                            <span>MLOps</span>
+                            <span>Automation</span>
+                        </div>
+                        <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf" class="btn about-btn">Download CV <i class="uil uil-import"></i></a>
+                    </div>
 
-                                My journey started with solving tricky problems in AI, which evolved into
-                                a passion for Generative AI. Today, I focus on building intelligent systems that can
-                                generate human-like content and solve complex challenges.
-                                where I combine technical depth with creative problem-solving.
-                            </p>
-                            <div class="about-btn">
-                                <a href="Mebrie Awoke_CV.pdf" download="Mebrie_Awoke_CV.pdf">
-                                    <button class="btn">Download CV <i class="uil uil-import"></i></button>
-                                </a>
+                    <div class="skill-stack">
+                        <div class="skill-card">
+                            <h3>Core Skills</h3>
+                            <div class="skills-list">
+                                <span>Python</span>
+                                <span>Java</span>
+                                <span>C++</span>
+                                <span>TensorFlow</span>
+                                <span>PyTorch</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <div class="skills-box">
-                            <div class="skills-header">
-                                <h3>Frontend</h3>
-                            </div>
+                        <div class="skill-card">
+                            <h3>Web & Data</h3>
                             <div class="skills-list">
                                 <span>HTML</span>
                                 <span>CSS</span>
-                                <span>Bootstrap</span>
                                 <span>JavaScript</span>
-                            </div>
-                        </div>
-                        <div class="skills-box">
-                            <div class="skills-header">
-                                <h3>Backend</h3>
-                            </div>
-                            <div class="skills-list">
-                                <span>JAVA</span>
-                                <span>Python</span>
-                                <span>C++</span>
-                            </div>
-                        </div>
-                        <div class="skills-box">
-                            <div class="skills-header">
-                                <h3>Database</h3>
-                            </div>
-                            <div class="skills-list">
                                 <span>MySQL</span>
-                                <span>PostgreSQL</span>
                                 <span>MongoDB</span>
                             </div>
                         </div>
@@ -157,112 +139,136 @@
                 </div>
             </section>
 
-            <!-- -------------- PROJECT BOX ---------------- -->
+            <section class="section" id="services">
+                <div class="top-header">
+                    <h1>Services</h1>
+                    <span>From strategy to deployment, I help turn ideas into polished solutions</span>
+                </div>
+                <div class="service-grid">
+                    <article class="service-card">
+                        <i class="uil uil-brain"></i>
+                        <h3>AI Solution Design</h3>
+                        <p>Designing custom pipelines, model architecture, and intelligent workflows for modern products.</p>
+                    </article>
+                    <article class="service-card">
+                        <i class="uil uil-robot"></i>
+                        <h3>Generative AI Apps</h3>
+                        <p>Building conversational assistants, content tools, and adaptive AI experiences with real-world value.</p>
+                    </article>
+                    <article class="service-card">
+                        <i class="uil uil-chart-line"></i>
+                        <h3>Data & Automation</h3>
+                        <p>Structuring data, automating repetitive workflows, and improving decision-making with smart systems.</p>
+                    </article>
+                </div>
+            </section>
 
             <section class="section" id="projects">
                 <div class="top-header">
-                    <h1>Projects</h1>
+                    <h1>Featured Projects</h1>
+                    <span>Selected work that highlights my technical range and product focus</span>
                 </div>
-                <div class="project-container">
-                    <div class="project-box">
-                        <i class="uil uil-briefcase-alt"></i>
-                        <h3>Completed</h3>
-                        <label>15+ Finished Projects</label>
-                    </div>
-                    <div class="project-box">
-                        <i class="uil uil-users-alt"></i>
-                        <h3>Clients</h3>
-                        <label>Happy Clients</label>
-                    </div>
-                    <div class="project-box">
-                        <i class="uil uil-award"></i>
-                        <h3>Experience</h3>
-                        <label>3+ Years in the field</label>
-                    </div>
+                <div class="project-grid">
+                    <article class="project-card">
+                        <div class="project-top">
+                            <h3>AI Assistant Platform</h3>
+                            <span>ML / NLP</span>
+                        </div>
+                        <p>Created an intelligent assistant that streamlines support and knowledge retrieval with contextual responses.</p>
+                        <a href="#contact">Discuss this project</a>
+                    </article>
+                    <article class="project-card">
+                        <div class="project-top">
+                            <h3>Smart Analytics Dashboard</h3>
+                            <span>Data / Automation</span>
+                        </div>
+                        <p>Delivered a real-time analytics experience that turns large data sets into clear, actionable insight.</p>
+                        <a href="#contact">Discuss this project</a>
+                    </article>
+                    <article class="project-card">
+                        <div class="project-top">
+                            <h3>Generative Content Engine</h3>
+                            <span>GenAI</span>
+                        </div>
+                        <p>Built a content generation workflow designed to accelerate ideation, drafting, and personalization.</p>
+                        <a href="#contact">Discuss this project</a>
+                    </article>
                 </div>
             </section>
 
-            <!-- -------------- CONTACT BOX ---------------- -->
+            <section class="section journey-section">
+                <div class="top-header">
+                    <h1>Journey</h1>
+                    <span>Progress shaped by curiosity, execution, and continuous growth</span>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3>2022</h3>
+                        <p>Started specializing in machine learning and intelligent application development.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>2024</h3>
+                        <p>Expanded into generative AI systems and scalable product solutions.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>2026</h3>
+                        <p>Continuing to build high-impact experiences across AI, automation, and software.</p>
+                    </div>
+                </div>
+            </section>
 
             <section class="section" id="contact">
                 <div class="top-header">
-                    <h1>Get in touch</h1>
-                    <span>Do you have a project in your mind, contact me here</span>
+                    <h1>Let’s build something exceptional</h1>
+                    <span>Have a product idea or a challenge to solve? I’d love to hear about it.</span>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="contact-info">
-                            <h2>Find Me <i class="uil uil-corner-right-down"></i></h2>
-                            <p><i class="uil uil-envelope"></i> Email: MebrieAwoke941@gamil.com</p>
-                            <p><i class="uil uil-phone"></i> +251 922 5454 47</p>
-                        </div>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h2>Find me</h2>
+                        <p><i class="uil uil-envelope"></i> mebrieawoke941@gmail.com</p>
+                        <p><i class="uil uil-phone"></i> +251 922 5454 47</p>
+                        <p><i class="uil uil-map-marker"></i> Addis Ababa, Ethiopia</p>
                     </div>
-                    <div class="col">
-                        <div class="form-control">
-                            <div class="form-inputs">
-                                <input type="text" class="input-field" placeholder="Name">
-                                <input type="text" class="input-field" placeholder="Email">
-                            </div>
-                            <div class="text-area">
-                                <textarea placeholder="Message"></textarea>
-                            </div>
-                            <div class="form-button">
-                                <button class="btn">Send <i class="uil uil-message"></i></button>
-                            </div>
+                    <div class="form-control">
+                        <div class="form-inputs">
+                            <input type="text" class="input-field" placeholder="Name">
+                            <input type="text" class="input-field" placeholder="Email">
+                        </div>
+                        <textarea placeholder="Message"></textarea>
+                        <div class="form-button">
+                            <button class="btn">Send Message <i class="uil uil-message"></i></button>
                         </div>
                     </div>
                 </div>
             </section>
-
         </main>
 
-
-        <!-- --------------- FOOTER --------------- -->
         <footer>
             <div class="top-footer">
-                <p>Mebrie Awoke .</p>
+                <p>Mebrie Awoke</p>
             </div>
             <div class="middle-footer">
                 <ul class="footer-menu">
-                    <li class="footer_menu_list">
-                        <a href="#home">Home</a>
-                    </li>
-                    <li class="footer_menu_list">
-                        <a href="#about">About</a>
-                    </li>
-                    <li class="footer_menu_list">
-                        <a href="#projects">Projects</a>
-                    </li>
-                    <li class="footer_menu_list">
-                        <a href="#contact">Contact</a>
-                    </li>
+                    <li class="footer_menu_list"><a href="#home">Home</a></li>
+                    <li class="footer_menu_list"><a href="#about">About</a></li>
+                    <li class="footer_menu_list"><a href="#projects">Projects</a></li>
+                    <li class="footer_menu_list"><a href="#contact">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-social-icons">
-                <div class="icon"><i class="uil uil-instagram"></i></div>
-                <div class="icon"><i class="uil uil-linkedin-alt"></i></div>
-                <div class="icon"><i class="uil uil-twitter"></i></div>
-                <div class="icon"><i class="uil uil-github-alt"></i></div>
+                <a class="icon" href="#"><i class="uil uil-instagram"></i></a>
+                <a class="icon" href="#"><i class="uil uil-linkedin-alt"></i></a>
+                <a class="icon" href="#"><i class="uil uil-twitter"></i></a>
+                <a class="icon" href="#"><i class="uil uil-github-alt"></i></a>
             </div>
             <div class="bottom-footer">
-                <p>Copyright &copy; <a href="#home" style="text-decoration: none;">Mebrie Awoke</a> - All rights
-                    reserved
-                </p>
+                <p>Copyright © <a href="#home">Mebrie Awoke</a> · All rights reserved</p>
             </div>
         </footer>
-
     </div>
 
-
-
-
-    <!-- ----- TYPING JS Link ----- -->
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
-
-    <!-- ----- SCROLL REVEAL JS Link----- -->
     <script src="https://unpkg.com/scrollreveal"></script>
-
-    <!-- ----- MAIN JS ----- -->
     <script src="script.js"></script>
 </body>
 
