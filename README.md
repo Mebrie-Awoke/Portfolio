@@ -1,5 +1,4 @@
-# Portfolio   
-
+# Portfolio  
 A personal portfolio website for Mebrie Awoke, showcasing software development, AI/ML work, projects, experience, and contact details.
 
 ## Features
