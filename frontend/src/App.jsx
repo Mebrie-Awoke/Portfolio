@@ -21,7 +21,7 @@ const jobs = [
  ["Innovation Intern","Arada Subcity","Contributing to software development and digital service initiatives, including practical solutions, APIs, and database design."],
  ["Website & Mobile App Developer Intern","Orient PLC","Worked on an e-commerce platform, implementing application features and connecting frontend and backend functionality."],
  ["Full-Stack Freelancer","Upwork","Developed web applications and software solutions across frontend and backend components."],
- ["Backend Developer","Additional experience","This role is listed in the CV without an employer or dates; further details can be provided on request."]
+ ["Backend Developer","Mahbere Kidusan","Backend development and software solutions, 2024–Present."]
 ];
 
 function Assistant() {
@@ -30,7 +30,7 @@ function Assistant() {
  const [loading,setLoading]=useState(false);
  const [messages,setMessages]=useState([{
   role:"assistant",
-  text:"Hi! I'm Mebrie's portfolio assistant. Ask me about his experience, skills, projects, or education."
+  text:"Hello! I'm Mebrie's portfolio assistant. Ask me about my experience, skills, projects, or education."
  }]);
 
  async function submit(event){
@@ -79,7 +79,7 @@ function Assistant() {
   {open&&<aside className="chat-panel" aria-label="Portfolio AI assistant">
    <div className="chat-head">
     <div className="bot-avatar"><Bot size={19}/></div>
-    <div><b>Portfolio AI</b><small><i/> RAG-powered assistant</small></div>
+    <div><b>Portfolio AI</b><small><i/> Here to help</small></div>
     <button className="icon-button" onClick={()=>setOpen(false)} aria-label="Close chat"><X size={18}/></button>
    </div>
    <div className="chat-messages" aria-live="polite" aria-relevant="additions">
@@ -97,7 +97,7 @@ function Assistant() {
      placeholder="Ask about my projects…" maxLength={1000} aria-label="Your question"/>
     <button disabled={loading||question.trim().length<2} aria-label="Send question"><Send size={17}/></button>
    </form>
-   <p className="chat-note">Answers are grounded in information from the CV and portfolio.</p>
+   
   </aside>}
  </>;
 }
@@ -161,7 +161,7 @@ export default function App(){
    <section className="intro-strip"><div><b>01</b> Curious by nature</div><div><b>02</b> Engineer by practice</div><div><b>03</b> AI for real-world problems</div></section>
    <section className="content-section section-wrap" id="about"><div className="section-label">01 / ABOUT ME</div><div className="about-grid"><h2 className="section-title">Building at the intersection of <span>AI and software.</span></h2><div className="about-copy"><p>I'm a self-taught software developer and fourth-year Information Science student at Addis Ababa University. My work spans backend and full-stack development, with a growing focus on artificial intelligence and machine learning.</p><p>I'm interested in natural language processing, computer vision, predictive modeling, and intelligent automation. I enjoy learning by building practical projects and exploring how technology can solve meaningful problems.</p><div className="education-card"><GraduationCap size={22}/><div><b>BSc in Information Science</b><span>Addis Ababa University · 2023 — Present</span></div></div></div></div></section>
    <section className="content-section section-wrap" id="skills"><div className="section-label">02 / TOOLKIT</div><div className="section-heading"><h2 className="section-title">Skills & <span>technologies.</span></h2><p>A growing toolkit across software engineering and applied AI.</p></div><div className="skills-grid">{skills.map(([title,...tags])=><article className="skill-card" key={title}><h3>{title}</h3><div className="skill-tags">{tags.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></section>
-   <section className="content-section section-wrap" id="projects"><div className="section-label">03 / SELECTED WORK</div><div className="section-heading"><h2 className="section-title">Projects with <span>purpose.</span></h2><p>A selection of projects and technical explorations from my CV.</p></div><div className="projects-grid">{projects.map(([num,name,type,desc,tags])=><article className="project-card" key={num}><div className="project-top"><b>{num}</b><ArrowUpRight size={18}/></div><p className="project-type">{type}</p><h3>{name}</h3><p className="project-description">{desc}</p><div className="project-stack">{tags.map(t=><span key={t}>{t}</span>)}</div></article>)}</div><p className="project-footnote">Repository links will be added after verifying each public project repository.</p></section>
+   <section className="content-section section-wrap" id="projects"><div className="section-label">03 / SELECTED WORK</div><div className="section-heading"><h2 className="section-title">Projects with <span>purpose.</span></h2><p>Selected work in AI, software development, and data-driven applications.</p></div><div className="projects-grid">{projects.map(([num,name,type,desc,tags])=><article className="project-card" key={num}><div className="project-top"><b>{num}</b><ArrowUpRight size={18}/></div><p className="project-type">{type}</p><h3>{name}</h3><p className="project-description">{desc}</p><div className="project-stack">{tags.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></section>
    <section className="content-section section-wrap" id="experience"><div className="section-label">04 / EXPERIENCE</div><div className="section-heading"><h2 className="section-title">Where I've <span>contributed.</span></h2><p>Professional experience and practical software development.</p></div><div className="timeline">{jobs.map(([role,company,detail],i)=><article className="timeline-item" key={role}><div className="timeline-marker">{String(i+1).padStart(2,"0")}</div><div><h3>{role}</h3><h4>{company}</h4><p>{detail}</p></div></article>)}</div></section>
    <section className="contact-section" id="contact"><div className="section-wrap contact-inner"><div className="section-label">05 / GET IN TOUCH</div><div className="contact-grid"><div className="contact-copy"><h2>Let's build something<br/><span>meaningful together.</span></h2><p>Have a project, opportunity, or idea in mind? Send me a message. I'll get back to you as soon as I can.</p><div className="contact-details"><a href="mailto:mebrieawoke941@gmail.com"><Mail size={17}/> mebrieawoke941@gmail.com</a><span><BriefcaseBusiness size={17}/> Addis Ababa, Ethiopia</span><a href="https://github.com/Mebrie-Awoke" target="_blank" rel="noreferrer"><Github size={17}/> GitHub profile</a></div></div><ContactForm/></div></div></section>
   </main><footer className="footer"><a className="brand" href="#home" aria-label="Mebrie Awoke home"><img className="brand-photo" src="/mebrie-profile.jpg" alt=""/><span>MA.</span></a><span>Designed & built by Mebrie Awoke Yizngaw</span><span>© {new Date().getFullYear()}</span></footer><Assistant/>
