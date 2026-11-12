@@ -4,7 +4,7 @@ import smtplib
 import time
 from email.message import EmailMessage
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
@@ -30,7 +30,6 @@ app.add_middleware(
 # Short-lived in-memory challenges. Use Redis if deploying multiple API instances.
 verification_codes: dict[str, dict] = {}
 code_requests: dict[str, list[float]] = {}
-ip_code_requests: dict[str, list[float]] = {}
 MAX_CODE_AGE_SECONDS = 600
 MAX_CODE_ATTEMPTS = 5
 MAX_CODE_REQUESTS_PER_HOUR = 3
@@ -75,16 +74,12 @@ def chat(payload: ChatRequest) -> ChatResponse:
 
 
 @app.post("/api/contact/send-code")
-def send_contact_code(payload: ContactCodeRequest, request: Request) -> dict[str, str]:
+def send_contact_code(payload: ContactCodeRequest) -> dict[str, str]:
     if payload.website.strip():
         return {"message": "If the address is valid, a verification code has been sent."}
 
     email = payload.email.strip().lower()
     now = time.time()
-    client_ip = request.client.host if request.client else "unknown"
-    ip_recent = [stamp for stamp in ip_code_requests.get(client_ip, []) if now - stamp < 3600]
-    if len(ip_recent) >= 8:
-        raise HTTPException(status_code=429, detail="Too many verification requests from this connection. Please try again later.")
     recent = [stamp for stamp in code_requests.get(email, []) if now - stamp < 3600]
     if len(recent) >= MAX_CODE_REQUESTS_PER_HOUR:
         raise HTTPException(status_code=429, detail="Too many verification requests. Please try again later.")
@@ -92,7 +87,6 @@ def send_contact_code(payload: ContactCodeRequest, request: Request) -> dict[str
     code = f"{secrets.randbelow(1_000_000):06d}"
     verification_codes[email] = {"code": code, "created": now, "attempts": 0}
     code_requests[email] = recent + [now]
-    ip_code_requests[client_ip] = ip_recent + [now]
 
     message = EmailMessage()
     message["Subject"] = "Verify your email for Mebrie's portfolio"
