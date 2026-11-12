@@ -36,6 +36,13 @@ Technologies: React 18, Vite, Tailwind CSS, Python 3.12, Django, Django REST Fra
 ### RoomPulse — Real-Time Classroom and Library Analysis
 Technologies: React Native, Expo, FastAPI, Python, YOLOv8n, OpenCV, and NumPy. A mobile application that analyzes live camera frames in classroom and library environments. It detects people, chairs, books, laptops, and screens; estimates activity levels using a transparent heuristic; and generates short, respectful contextual commentary based on verified detections. Users can pause, resume, and finish a scan to view a session summary.
 
+### AradaDgaf — IT Support Ticketing System
+Repository: https://github.com/Mebrie-Awoke/AradaDgaf
+Technologies: Django REST Framework, MongoDB Atlas, PyMongo, and SQLite (Django admin and sessions only). A role-based IT support platform for employee requests, ticket assignment, priority and status tracking, departments and categories, public comments, private support notes, notifications, dashboards, audit history, and private image attachments. The API includes authentication, user management, ticket workflows, and administrative audit endpoints.
+
+### LogScope — Full-Stack Log Analyzer
+Technologies: TypeScript, Node.js, Express, Multer, HTML, CSS, and JSON-file persistence. A modular application that accepts log-file uploads, parses timestamped entries and severity labels, supports searching, severity filtering and sorting, displays statistics and summaries, and stores analysis history. Uploaded files are staged for processing and removed afterward. This repository is currently private.
+
 ## Professional experience
 ### Arada Subcity Innovation Intern — Addis Ababa, Ethiopia
 Participates in software development and digital service initiatives in a public-sector innovation environment. Explores improvements to administrative processes and service delivery through software, APIs, database design, and engineering.
