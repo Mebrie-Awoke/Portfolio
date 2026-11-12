@@ -1,4 +1,4 @@
-# Mebrie Awoke — Portfolio
+# Mebrie Awoke — Portfolio 
 
 A full-stack personal portfolio with a React frontend and a FastAPI assistant.
 
