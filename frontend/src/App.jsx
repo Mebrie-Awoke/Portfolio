@@ -16,7 +16,8 @@ const projects = [
  ["03","HireLens","Resume & job matching","A job-fit application comparing resume content with job descriptions, highlighting matching and missing skills, and providing career recommendations.",["Python","FastAPI","React"]],
  ["04","Telegram RAG Assistant","AI integration","A Telegram conversational application exploring retrieval-based responses and language-model integration through backend services.",["Python","RAG","Groq API","Telegram API"]],
  ["05","Music Recommendation","Machine learning","A recommendation engine that analyzes music data and preferences to support personalized song discovery.",["Python","Pandas","scikit-learn"]],
- ["06","RoomPulse","Real-time computer vision","A mobile application for classrooms and libraries that analyzes live camera frames, detects people and learning-space objects, estimates activity levels, and provides contextual AI commentary.",["React Native","Expo","FastAPI","YOLOv8n","OpenCV"]]
+ ["06","RoomPulse","Real-time computer vision","A mobile application for classrooms and libraries that analyzes live camera frames, detects people and learning-space objects, estimates activity levels, and provides contextual AI commentary.",["React Native","Expo","FastAPI","YOLOv8n","OpenCV"]],
+ ["07","Prospira","AI-powered resume builder","A full-stack resume platform for creating and managing professional resumes, choosing from four templates, uploading a profile photo, and receiving AI-assisted feedback tailored to a job description.",["React","Vite","Tailwind CSS","Django REST Framework","Simple JWT","Groq API"]]
 ];
 const jobs = [
  ["Innovation Intern","Arada Subcity","Contributing to software development and digital service initiatives, including practical solutions, APIs, and database design."],
