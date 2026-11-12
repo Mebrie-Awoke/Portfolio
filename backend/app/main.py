@@ -4,7 +4,7 @@ import smtplib
 import time
 from email.message import EmailMessage
 
-from fastapi import FastAPI, HTTPException, Request, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
@@ -80,6 +80,10 @@ def send_contact_code(payload: ContactCodeRequest, request: Request) -> dict[str
 
     email = payload.email.strip().lower()
     now = time.time()
+    client_ip = request.client.host if request.client else "unknown"
+    ip_recent = [stamp for stamp in ip_code_requests.get(client_ip, []) if now - stamp < 3600]
+    if len(ip_recent) >= 8:
+        raise HTTPException(status_code=429, detail="Too many verification requests from this connection. Please try again later.")
     recent = [stamp for stamp in code_requests.get(email, []) if now - stamp < 3600]
     if len(recent) >= MAX_CODE_REQUESTS_PER_HOUR:
         raise HTTPException(status_code=429, detail="Too many verification requests. Please try again later.")
@@ -87,6 +91,7 @@ def send_contact_code(payload: ContactCodeRequest, request: Request) -> dict[str
     code = f"{secrets.randbelow(1_000_000):06d}"
     verification_codes[email] = {"code": code, "created": now, "attempts": 0}
     code_requests[email] = recent + [now]
+    ip_code_requests[client_ip] = ip_recent + [now]
 
     message = EmailMessage()
     message["Subject"] = "Verify your email for Mebrie's portfolio"
