@@ -63,7 +63,10 @@ def chat(payload: ChatRequest) -> ChatResponse:
     if not settings.groq_api_key:
         raise HTTPException(status_code=503, detail="The AI assistant is not configured yet. Please try again later.")
     try:
-        answer, sources = get_rag_service().answer(question)
+        answer, sources = get_rag_service().answer(
+            question,
+            history=[item.model_dump() for item in payload.history],
+        )
         return ChatResponse(answer=answer, sources=[Source(**source) for source in sources])
     except RuntimeError as exc:
         logger.warning("RAG assistant configuration or knowledge error: %s", exc)
