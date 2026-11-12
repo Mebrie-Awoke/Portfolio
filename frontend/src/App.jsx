@@ -49,7 +49,7 @@ function Assistant() {
    const response=await fetch(API+"/api/chat",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({question:q})
+    body:JSON.stringify({question:q,history:messages.filter((message,index)=>index>0&&(message.role==="user"||message.role==="assistant")).slice(-8).map(message=>({role:message.role,content:message.text}))})
    });
    let data={};
    try{data=await response.json();}catch{/* Handle a non-JSON server response below. */}
@@ -93,7 +93,7 @@ function Assistant() {
       {message.sources.map((source,sourceIndex)=><p key={sourceIndex}><b>{source.section}</b><br/>{source.excerpt}</p>)}
      </details>}
     </div>)}
-    {loading&&<div className="chat-message assistant">Searching portfolio knowledge…</div>}
+    {loading&&<div className="chat-message assistant">Thinking…</div>}
    </div>
    <form className="chat-form" onSubmit={submit}>
     <input value={question} onChange={event=>setQuestion(event.target.value)}
