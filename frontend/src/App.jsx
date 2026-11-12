@@ -21,7 +21,6 @@ const jobs = [
  ["Innovation Intern","Arada Subcity","Contributing to software development and digital service initiatives, including practical solutions, APIs, and database design."],
  ["Website & Mobile App Developer Intern","Orient PLC","Worked on an e-commerce platform, implementing application features and connecting frontend and backend functionality."],
  ["Full-Stack Freelancer","Upwork","Developed web applications and software solutions across frontend and backend components."],
- ["Backend Developer","Mahbere Kidusan","Backend development and software solutions, 2024–Present."]
 ];
 
 function Assistant() {
