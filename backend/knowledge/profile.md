@@ -30,6 +30,9 @@ Technologies: Python, FastAPI, React. Compares a candidate's resume and profile 
 ### Music Recommendation System
 Technologies: Python, Machine Learning, Pandas, scikit-learn. A recommendation engine that suggests songs based on preferences and analyzes music data for personalized discovery. CV-listed GitHub name: SmartMusic; verify exact URL before publishing.
 
+### Prospira — AI-Powered Resume Builder
+Technologies: React 18, Vite, Tailwind CSS, Python 3.12, Django, Django REST Framework, Simple JWT, Groq API, SQLite (development), PostgreSQL (supported), Docker, Gunicorn, and WhiteNoise. A full-stack platform for creating, editing, and managing resumes; organizing education, experience, skills, projects, certifications, and links; selecting from four professional templates; and uploading a profile photo. Its AI analyzer provides resume feedback tailored to a target job description, including a score, strengths, improvement suggestions, skills analysis, and recommendations. Authentication uses JWT. The analyzer accepts resume text and an optional job description, requires authentication, and is rate-limited to 10 requests per user per hour. Submitted resume text is sent to Groq for analysis, with email addresses and phone numbers redacted before submission.
+
 ### RoomPulse — Real-Time Classroom and Library Analysis
 Technologies: React Native, Expo, FastAPI, Python, YOLOv8n, OpenCV, and NumPy. A mobile application that analyzes live camera frames in classroom and library environments. It detects people, chairs, books, laptops, and screens; estimates activity levels using a transparent heuristic; and generates short, respectful contextual commentary based on verified detections. Users can pause, resume, and finish a scan to view a session summary.
 
