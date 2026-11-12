@@ -15,7 +15,7 @@ Python 3.11+ is recommended.
 ```bash
 cd backend
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate
+# Windows: .venv\Scripts\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 # Copy .env.example to .env and add your GROQ_API_KEY
@@ -34,7 +34,10 @@ npm run dev
 
 Set `VITE_API_URL=http://127.0.0.1:8000` in `frontend/.env`.
 
-## CV and profile assets\nThe original CV PDF and profile images are retained in `Portfolio/`. The frontend links to the existing CV PDF and profile portrait.\n\n## RAG assistant
+## CV and profile assets
+The original CV PDF and profile images are retained in `Portfolio/`. The frontend links to the existing CV PDF and profile portrait.
+
+## RAG assistant
 The backend chunks the portfolio knowledge, creates sentence-transformer embeddings, stores them in ChromaDB, retrieves relevant passages for each question, and uses Groq to generate a context-grounded answer. If the knowledge base does not contain the answer, the assistant says so.
 
 ## Configuration and deployment
