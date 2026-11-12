@@ -1,21 +1,31 @@
 from __future__ import annotations
 
 import hashlib
+import math
+import re
+from collections import Counter
 from pathlib import Path
 
-import chromadb
 from groq import Groq
-from sentence_transformers import SentenceTransformer
 
 from .config import settings
 
 KNOWLEDGE_FILE = Path(__file__).resolve().parents[1] / "knowledge" / "profile.md"
+
+# Small stop-word list keeps common question words from dominating retrieval.
+STOP_WORDS = {
+    "a", "about", "an", "and", "are", "as", "at", "be", "by", "can",
+    "do", "for", "from", "how", "i", "in", "is", "it", "me", "my",
+    "of", "on", "or", "tell", "that", "the", "this", "to", "what",
+    "when", "where", "which", "who", "why", "with", "you", "your",
+}
 
 
 def split_into_chunks(text: str, chunk_size: int = 180, overlap: int = 30) -> list[str]:
     """Split knowledge text into overlapping word chunks."""
     if chunk_size < 1 or overlap < 0 or overlap >= chunk_size:
         raise ValueError("Use chunk_size > overlap >= 0.")
+
     words = text.split()
     chunks: list[str] = []
     start = 0
@@ -30,82 +40,75 @@ def split_into_chunks(text: str, chunk_size: int = 180, overlap: int = 30) -> li
     return chunks
 
 
+def tokenize(text: str) -> list[str]:
+    return [
+        token for token in re.findall(r"[a-z0-9+#.]+", text.lower())
+        if len(token) > 1 and token not in STOP_WORDS
+    ]
+
+
 class PortfolioRAG:
-    """Lazy-loaded RAG service backed by ChromaDB and Groq."""
+    """Lightweight lexical retrieval with Groq response generation.
+
+    The portfolio knowledge base is small and static, so local vector databases
+    and neural embedding models are unnecessary for this deployment.
+    """
 
     def __init__(self) -> None:
-        self.embedder: SentenceTransformer | None = None
-        self.client = chromadb.PersistentClient(path=settings.chroma_path)
-        self.collection = self.client.get_or_create_collection(
-            name=settings.collection_name, metadata={"hnsw:space": "cosine"}
-        )
-
-    def _get_embedder(self) -> SentenceTransformer:
-        if self.embedder is None:
-            self.embedder = SentenceTransformer(settings.embedding_model)
-        return self.embedder
-
-    def _index_knowledge(self) -> None:
         if not KNOWLEDGE_FILE.is_file():
             raise RuntimeError(f"Portfolio knowledge file not found: {KNOWLEDGE_FILE}")
+
         text = KNOWLEDGE_FILE.read_text(encoding="utf-8").strip()
-        chunks = split_into_chunks(text)
-        if not chunks:
+        self.chunks = split_into_chunks(text)
+        if not self.chunks:
             raise RuntimeError("Portfolio knowledge file is empty.")
 
-        content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
-        metadata = self.collection.metadata or {}
-        if metadata.get("knowledge_hash") == content_hash and self.collection.count() == len(chunks):
-            return
-
-        # Rebuild the index only when the source knowledge changes.
-        existing_ids = self.collection.get().get("ids", [])
-        if existing_ids:
-            self.collection.delete(ids=existing_ids)
-
-        vectors = self._get_embedder().encode(
-            chunks, normalize_embeddings=True, show_progress_bar=False
-        ).tolist()
-        self.collection.add(
-            ids=[f"profile-{index}" for index in range(len(chunks))],
-            documents=chunks,
-            embeddings=vectors,
-            metadatas=[{"source": "profile.md"} for _ in chunks],
-        )
-        self.collection.modify(
-            metadata={**metadata, "hnsw:space": "cosine", "knowledge_hash": content_hash}
-        )
+        self.tokens = [Counter(tokenize(chunk)) for chunk in self.chunks]
+        self.document_frequency = Counter()
+        for counts in self.tokens:
+            self.document_frequency.update(counts.keys())
+        self.total_documents = len(self.chunks)
+        self.content_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
 
     def retrieve(self, question: str, limit: int = 4) -> list[dict[str, str]]:
-        self._index_knowledge()
-        total = self.collection.count()
-        if total == 0:
+        query_tokens = tokenize(question)
+        if not query_tokens:
             return []
 
-        vector = self._get_embedder().encode(
-            [question], normalize_embeddings=True, show_progress_bar=False
-        ).tolist()[0]
-        result = self.collection.query(
-            query_embeddings=[vector],
-            n_results=min(limit, total),
-            include=["documents", "distances"],
-        )
-        documents = result.get("documents", [[]])[0] or []
-        distances = result.get("distances", [[]])[0] or []
+        query_counts = Counter(query_tokens)
+        scored: list[tuple[float, int]] = []
+
+        for index, document_counts in enumerate(self.tokens):
+            score = 0.0
+            for token, query_frequency in query_counts.items():
+                frequency = document_counts.get(token, 0)
+                if not frequency:
+                    continue
+                inverse_frequency = math.log(
+                    1 + self.total_documents / (1 + self.document_frequency[token])
+                )
+                score += query_frequency * inverse_frequency * (1 + math.log(frequency))
+
+            if score > 0:
+                scored.append((score, index))
+
+        scored.sort(reverse=True)
         return [
-            {"section": "Portfolio knowledge", "excerpt": document}
-            for document, distance in zip(documents, distances)
-            if document and distance is not None and distance <= 0.75
+            {"section": "Portfolio knowledge", "excerpt": self.chunks[index]}
+            for _, index in scored[:limit]
         ]
 
     def answer(self, question: str) -> tuple[str, list[dict[str, str]]]:
         if not settings.groq_api_key:
-            raise RuntimeError("The assistant is not configured. Add GROQ_API_KEY to the backend environment.")
+            raise RuntimeError(
+                "The assistant is not configured. Add GROQ_API_KEY to the backend environment."
+            )
 
         sources = self.retrieve(question)
         if not sources:
             return (
-                "I couldn't find that information in Mebrie's portfolio or CV. Please contact Mebrie for confirmation.",
+                "I couldn't find that information in Mebrie's portfolio or CV. "
+                "Please contact Mebrie for confirmation.",
                 [],
             )
 
@@ -127,7 +130,10 @@ class PortfolioRAG:
                         "Be concise and professional."
                     ),
                 },
-                {"role": "user", "content": f"Portfolio context:\n{context}\n\nQuestion: {question}"},
+                {
+                    "role": "user",
+                    "content": f"Portfolio context:\n{context}\n\nQuestion: {question}",
+                },
             ],
         )
         answer = completion.choices[0].message.content
@@ -138,7 +144,7 @@ rag_service: PortfolioRAG | None = None
 
 
 def get_rag_service() -> PortfolioRAG:
-    """Create the lightweight service once; load embeddings only when chatting."""
+    """Create the retrieval service once, when the first chat request arrives."""
     global rag_service
     if rag_service is None:
         rag_service = PortfolioRAG()
