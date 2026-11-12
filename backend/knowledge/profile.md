@@ -34,8 +34,8 @@ Technologies: Python, Machine Learning, Pandas, scikit-learn. A recommendation e
 ### Arada Subcity Innovation Intern — Addis Ababa, Ethiopia
 Participates in software development and digital service initiatives in a public-sector innovation environment. Explores improvements to administrative processes and service delivery through software, APIs, database design, and engineering.
 
-### Backend Developer
-This role is listed in the CV without employer or dates. Further details need confirmation.
+### Backend Developer — Mahbere Kidusan
+Backend development and software solutions, 2024–Present.
 
 ### Website & Mobile App Developer paid Intern — Orient PLC
 Worked on web and mobile application development for an e-commerce platform, implementing features and integrating frontend/backend functionality.
