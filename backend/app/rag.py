@@ -99,6 +99,25 @@ class PortfolioRAG:
         ]
 
     def answer(self, question: str) -> tuple[str, list[dict[str, str]]]:
+        # Handle conversational messages before searching the CV. Greetings and
+        # thanks are not knowledge questions and should never trigger the fallback.
+        normalized = re.sub(r"[^a-z0-9\\s']", " ", question.lower()).strip()
+        normalized = re.sub(r"\\s+", " ", normalized)
+        greeting_patterns = (
+            r"^(hi|hey|hello|hiya|heya)[!. ]*$",
+            r"^(good morning|good afternoon|good evening)[!. ]*$",
+            r"^(how are you|how's it going|how are things)[?!. ]*$",
+        )
+        if any(re.fullmatch(pattern, normalized) for pattern in greeting_patterns):
+            return (
+                "Hi! I'm Mebrie's portfolio assistant. I can tell you about his "
+                "education, technical skills, projects, and professional experience. "
+                "What would you like to know?",
+                [],
+            )
+        if re.fullmatch(r"(thanks|thank you|thx|thank you so much)[!. ]*", normalized):
+            return ("You're welcome! Feel free to ask me anything about Mebrie's work, projects, or skills.", [])
+
         if not settings.groq_api_key:
             raise RuntimeError(
                 "The assistant is not configured. Add GROQ_API_KEY to the backend environment."
