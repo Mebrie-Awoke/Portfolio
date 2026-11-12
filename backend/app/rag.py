@@ -101,8 +101,8 @@ class PortfolioRAG:
     def answer(self, question: str) -> tuple[str, list[dict[str, str]]]:
         # Handle conversational messages before searching the CV. Greetings and
         # thanks are not knowledge questions and should never trigger the fallback.
-        normalized = re.sub(r"[^a-z0-9\\s']", " ", question.lower()).strip()
-        normalized = re.sub(r"\\s+", " ", normalized)
+        normalized = re.sub(r"[^a-z0-9\s']", " ", question.lower()).strip()
+        normalized = re.sub(r"\s+", " ", normalized)
         greeting_patterns = (
             r"^(hi|hey|hello|hiya|heya)[!. ]*$",
             r"^(good morning|good afternoon|good evening)[!. ]*$",
