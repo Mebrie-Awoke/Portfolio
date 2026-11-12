@@ -1,30 +1,33 @@
 # Mebrie Awoke — Portfolio
 
-A full-stack personal portfolio with a React frontend and a FastAPI RAG assistant.
+A full-stack personal portfolio with a React frontend and a FastAPI assistant.
 
 ## Structure
+
 - `frontend/` — React + Vite portfolio and chat interface
-- `backend/` — FastAPI service, document chunking, embeddings, ChromaDB retrieval, and Groq generation
-- `backend/knowledge/profile.md` — curated CV-grounded knowledge used by the assistant
+- `backend/` — FastAPI API, lightweight portfolio retrieval, Groq responses, and verified contact form
+- `backend/knowledge/profile.md` — CV-grounded knowledge used by the assistant
 
 ## Run locally
 
 ### Backend
-Python 3.11+ is recommended.
+
+Python 3.12 is recommended.
 
 ```bash
 cd backend
 python -m venv .venv
-# Windows: .venv\Scripts\activate
+# Windows: .venv\\Scripts\\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-# Copy .env.example to .env and add your GROQ_API_KEY
+# Copy .env.example to .env and set GROQ_API_KEY
 uvicorn app.main:app --reload
 ```
 
 API docs: http://127.0.0.1:8000/docs
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
@@ -34,26 +37,40 @@ npm run dev
 
 Set `VITE_API_URL=http://127.0.0.1:8000` in `frontend/.env`.
 
-## RAG assistant
-The backend chunks the portfolio knowledge, creates sentence-transformer embeddings, stores them in ChromaDB, retrieves relevant passages for each question, and uses Groq to generate a context-grounded answer. If the knowledge base does not contain the answer, the assistant says so.
+## Assistant
 
-## Configuration and deployment
-Backend settings are documented in `backend/.env.example`. Never expose or commit `GROQ_API_KEY`. Deploy frontend and backend separately, set `VITE_API_URL` to the deployed API URL, configure backend `CORS_ORIGINS` for the frontend domain, and persist the ChromaDB directory on a persistent disk.
+The backend ranks relevant passages from the small, static portfolio knowledge file using lightweight lexical retrieval, then uses Groq to generate concise, context-grounded answers. This avoids loading large embedding models or a local vector database, keeping the API suitable for low-memory hosting.
 
-## Content accuracy
-Project descriptions are based on the supplied CV. Verify project repository URLs and add any public CV, screenshots, and live demos you want to publish.
+## Render deployment
+
+Create a **Web Service** from this repository with:
+
+- Root directory: `backend`
+- Runtime: Python 3
+- Build command: `pip install -r requirements.txt`
+- Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+The `backend/.python-version` file pins Python to 3.12.11.
+
+Set these environment variables in Render:
+
+- `GROQ_API_KEY` — your Groq API key
+- `GROQ_MODEL=llama-3.3-70b-versatile`
+- `CORS_ORIGINS` — your deployed frontend origin (for example, `https://your-site.vercel.app`)
+
+Health check: `/api/health`.
 
 ## Verified contact form
 
-The contact form sends a one-time 6-digit code to the visitor's email address. The message is delivered to `mebrieawoke941@gmail.com` only after the visitor enters the correct code. Codes expire after 10 minutes, allow up to five attempts, and verification requests are rate-limited.
+The contact form emails a one-time 6-digit code to the visitor. The message is delivered to `mebrieawoke941@gmail.com` only after the correct code is entered. Codes expire after 10 minutes, allow up to five attempts, and verification requests are rate-limited.
 
-Configure these environment variables on the backend (Render) before enabling the form:
+Configure these Render environment variables to enable email:
 
 - `SMTP_HOST=smtp.gmail.com`
 - `SMTP_PORT=587`
-- `SMTP_USERNAME` — the Gmail account used to send mail
+- `SMTP_USERNAME` — the sending Gmail account
 - `SMTP_PASSWORD` — a Google App Password (not the normal Gmail password)
-- `SMTP_FROM_EMAIL` — the same sending Gmail address
+- `SMTP_FROM_EMAIL` — the sending Gmail address
 - `CONTACT_TO_EMAIL=mebrieawoke941@gmail.com`
 
-For local development, add the same settings to `backend/.env`. Never commit real credentials. Verification codes are stored in process memory; use Redis if running multiple backend instances or requiring persistent rate limits.
+Never commit real API keys or email credentials. Verification codes and rate limits are stored in process memory, so use a single API instance.
