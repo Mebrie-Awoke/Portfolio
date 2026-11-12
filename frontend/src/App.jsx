@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowDown, ArrowUpRight, Bot, FileDown, BrainCircuit, BriefcaseBusiness, Code2, Github, GraduationCap, Mail, Menu, MessageCircle, Send, Sparkles, X, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowDown, ArrowUpRight, Bot, FileDown, BrainCircuit, BriefcaseBusiness, Code2, Github, GraduationCap, Mail, Menu, MessageCircle, Send, Sparkles, X, Zap, Sun, Moon } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 const skills = [
@@ -103,9 +103,12 @@ function Assistant() {
 }
 
 export default function App(){
- const [menu,setMenu]=useState(false),nav=["About","Skills","Projects","Experience","Contact"];
- return <div className="site-shell">
-  <header className="topbar"><a className="brand" href="#home">MA<span>.</span></a><button className="mobile-menu" onClick={()=>setMenu(!menu)} aria-label="Toggle navigation" aria-expanded={menu}>{menu?<X/>:<Menu/>}</button><nav className={menu?"nav-links show":"nav-links"}>{nav.map(n=><a key={n} href={"#"+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a className="nav-cta" href="mailto:mebrieawoke941@gmail.com">Let's talk <ArrowUpRight size={15}/></a></nav></header>
+ const [menu,setMenu]=useState(false);
+ const [theme,setTheme]=useState(()=>localStorage.getItem("portfolio-theme")||"light");
+ useEffect(()=>{localStorage.setItem("portfolio-theme",theme);},[theme]);
+ const nav=["About","Skills","Projects","Experience","Contact"];
+ return <div className="site-shell" data-theme={theme}>
+  <header className="topbar"><a className="brand" href="#home">MA<span>.</span></a><button className="theme-toggle" onClick={()=>setTheme(value=>value==="light"?"dark":"light")} aria-label={theme==="light"?"Switch to dark mode":"Switch to light mode"} title={theme==="light"?"Switch to dark mode":"Switch to light mode"}>{theme==="light"?<Moon size={18}/>:<Sun size={18}/>}</button><button className="mobile-menu" onClick={()=>setMenu(!menu)} aria-label="Toggle navigation" aria-expanded={menu}>{menu?<X/>:<Menu/>}</button><nav className={menu?"nav-links show":"nav-links"}>{nav.map(n=><a key={n} href={"#"+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a className="nav-cta" href="mailto:mebrieawoke941@gmail.com">Let's talk <ArrowUpRight size={15}/></a></nav></header>
   <main>
    <section className="hero section-wrap" id="home"><div className="hero-copy"><div className="eyebrow"><i/> AVAILABLE FOR OPPORTUNITIES</div><p className="hero-kicker">Hello, I'm</p><h1>Mebrie <span>Awoke.</span></h1><h2>AI/ML Engineer <i>×</i> Software Developer</h2><p className="hero-description">I build intelligent software systems that turn ideas and data into useful experiences. Focused on applied AI, machine learning, and backend engineering.</p><div className="hero-actions"><a className="primary-button" href="#projects">Explore my work <ArrowUpRight size={17}/></a><a className="text-button" href="mailto:mebrieawoke941@gmail.com">Get in touch <ArrowUpRight size={16}/></a><a className="text-button cv-button" href="https://raw.githubusercontent.com/Mebrie-Awoke/Portfolio/main/Portfolio/Mebrie%20Awoke_CV.pdf" target="_blank" rel="noreferrer">Download CV <FileDown size={16}/></a></div><div className="hero-meta"><span><GraduationCap size={16}/> Information Science · AAU</span><span><i/> Addis Ababa, Ethiopia</span></div></div><div className="hero-art"><div className="orbit one"/><div className="orbit two"/><div className="hero-core"><img src="https://raw.githubusercontent.com/Mebrie-Awoke/Portfolio/main/Portfolio/profile4.png" alt="Portrait of Mebrie Awoke"/><span>AI × SOFTWARE</span></div><div className="float-card python"><Code2 size={17}/> Python</div><div className="float-card rag"><Sparkles size={17}/> RAG systems</div><div className="float-card api"><Zap size={17}/> APIs</div><div className="art-caption">Curiosity → Engineering → Impact</div></div><a className="scroll-cue" href="#about"><ArrowDown size={15}/> SCROLL TO EXPLORE</a></section>
    <section className="intro-strip"><div><b>01</b> Curious by nature</div><div><b>02</b> Engineer by practice</div><div><b>03</b> AI for real-world problems</div></section>
