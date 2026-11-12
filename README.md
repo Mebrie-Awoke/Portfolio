@@ -45,3 +45,18 @@ Backend settings are documented in `backend/.env.example`. Never expose or commi
 
 ## Content accuracy
 Project descriptions are based on the supplied CV. Verify project repository URLs and add the public CV PDF, screenshots, and live demos before publishing.
+
+## Verified contact form
+
+The contact form sends a one-time 6-digit code to the visitor's email address. The message is delivered to `mebrieawoke941@gmail.com` only after the visitor enters the correct code. Codes expire after 10 minutes, allow up to five attempts, and verification requests are rate-limited.
+
+Configure these environment variables on the backend (Render) before enabling the form:
+
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=587`
+- `SMTP_USERNAME` — the Gmail account used to send mail
+- `SMTP_PASSWORD` — a Google App Password (not the normal Gmail password)
+- `SMTP_FROM_EMAIL` — the same sending Gmail address
+- `CONTACT_TO_EMAIL=mebrieawoke941@gmail.com`
+
+For local development, add the same settings to `backend/.env`. Never commit real credentials. Verification codes are stored in process memory; use Redis if running multiple backend instances or requiring persistent rate limits.
