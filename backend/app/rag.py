@@ -134,13 +134,26 @@ class PortfolioRAG:
         )
         if any(re.fullmatch(pattern, normalized) for pattern in greeting_patterns):
             return (
-                "Hi! I'm Mebrie's portfolio assistant. I can tell you about his "
-                "education, technical skills, projects, and professional experience. "
-                "What would you like to know?",
+                "Hi! I'm Mebrie's portfolio assistant. How can I help you today?",
                 [],
             )
+
+        # Handle common small-talk expressions as conversation, not CV questions.
+        if re.fullmatch(
+            r"(what'?s up|wassup|what is up|what'?s new|how'?s it going|"
+            r"how are you doing|how have you been|how'?s everything|"
+            r"how is everything|how'?s your day|how is your day)[?!. ]*",
+            normalized,
+        ):
+            return (
+                "Not much—I'm here and ready to help! If you're curious about "
+                "Mebrie, feel free to ask me about his projects, skills, education, "
+                "or experience.",
+                [],
+            )
+
         if re.fullmatch(r"(thanks|thank you|thx|thank you so much)[!. ]*", normalized):
-            return ("You're welcome! Feel free to ask me anything about Mebrie's work, projects, or skills.", [])
+            return ("You're welcome! Happy to help. What would you like to know about Mebrie?", [])
 
         if not settings.groq_api_key:
             raise RuntimeError(
