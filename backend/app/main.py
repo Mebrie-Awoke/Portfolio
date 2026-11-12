@@ -4,7 +4,7 @@ import smtplib
 import time
 from email.message import EmailMessage
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
@@ -29,7 +29,7 @@ app.add_middleware(
 
 # Short-lived in-memory challenges. Use Redis if deploying multiple API instances.
 verification_codes: dict[str, dict] = {}
-code_requests: dict[str, list[float]] = {}
+code_requests: dict[str, list[float]] = {}\nip_code_requests: dict[str, list[float]] = {}
 MAX_CODE_AGE_SECONDS = 600
 MAX_CODE_ATTEMPTS = 5
 MAX_CODE_REQUESTS_PER_HOUR = 3
@@ -74,7 +74,7 @@ def chat(payload: ChatRequest) -> ChatResponse:
 
 
 @app.post("/api/contact/send-code")
-def send_contact_code(payload: ContactCodeRequest) -> dict[str, str]:
+def send_contact_code(payload: ContactCodeRequest, request: Request) -> dict[str, str]:
     if payload.website.strip():
         return {"message": "If the address is valid, a verification code has been sent."}
 
