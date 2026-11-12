@@ -34,9 +34,6 @@ npm run dev
 
 Set `VITE_API_URL=http://127.0.0.1:8000` in `frontend/.env`.
 
-## CV and profile assets
-The original CV PDF and profile images are retained in `Portfolio/`. The frontend links to the existing CV PDF and profile portrait.
-
 ## RAG assistant
 The backend chunks the portfolio knowledge, creates sentence-transformer embeddings, stores them in ChromaDB, retrieves relevant passages for each question, and uses Groq to generate a context-grounded answer. If the knowledge base does not contain the answer, the assistant says so.
 
@@ -44,7 +41,7 @@ The backend chunks the portfolio knowledge, creates sentence-transformer embeddi
 Backend settings are documented in `backend/.env.example`. Never expose or commit `GROQ_API_KEY`. Deploy frontend and backend separately, set `VITE_API_URL` to the deployed API URL, configure backend `CORS_ORIGINS` for the frontend domain, and persist the ChromaDB directory on a persistent disk.
 
 ## Content accuracy
-Project descriptions are based on the supplied CV. Verify project repository URLs and add the public CV PDF, screenshots, and live demos before publishing.
+Project descriptions are based on the supplied CV. Verify project repository URLs and add any public CV, screenshots, and live demos you want to publish.
 
 ## Verified contact form
 
