@@ -30,6 +30,9 @@ Technologies: Python, FastAPI, React. Compares a candidate's resume and profile 
 ### Music Recommendation System
 Technologies: Python, Machine Learning, Pandas, scikit-learn. A recommendation engine that suggests songs based on preferences and analyzes music data for personalized discovery. CV-listed GitHub name: SmartMusic; verify exact URL before publishing.
 
+### RoomPulse — Real-Time Classroom and Library Analysis
+Technologies: React Native, Expo, FastAPI, Python, YOLOv8n, OpenCV, and NumPy. A mobile application that analyzes live camera frames in classroom and library environments. It detects people, chairs, books, laptops, and screens; estimates activity levels using a transparent heuristic; and generates short, respectful contextual commentary based on verified detections. Users can pause, resume, and finish a scan to view a session summary.
+
 ## Professional experience
 ### Arada Subcity Innovation Intern — Addis Ababa, Ethiopia
 Participates in software development and digital service initiatives in a public-sector innovation environment. Explores improvements to administrative processes and service delivery through software, APIs, database design, and engineering.
