@@ -4,9 +4,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
-    chroma_path: str = "./.chroma"
-    collection_name: str = "mebrie_portfolio"
     cors_origins: str = "http://localhost:5173"
     smtp_host: str = ""
     smtp_port: int = 587
