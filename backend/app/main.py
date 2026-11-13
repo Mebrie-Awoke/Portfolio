@@ -1,7 +1,9 @@
+import json
 import logging
 import secrets
-import smtplib
 import time
+import urllib.error
+import urllib.request
 from email.message import EmailMessage
 
 from fastapi import FastAPI, HTTPException
@@ -16,7 +18,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Mebrie Awoke Portfolio API",
     description="Portfolio API with a retrieval-augmented assistant and verified contact form.",
-    version="1.2.0",
+    version="1.3.0",
 )
 
 app.add_middleware(
@@ -36,17 +38,47 @@ MAX_CODE_REQUESTS_PER_HOUR = 3
 
 
 def send_email(message: EmailMessage) -> None:
-    if not all([settings.smtp_host, settings.smtp_username, settings.smtp_password, settings.smtp_from_email]):
-        raise HTTPException(status_code=503, detail="Email delivery is not configured yet. Please try again later.")
+    """Send mail through the Google Apps Script HTTPS gateway.
+
+    Render free web services cannot make outbound SMTP connections. The Apps
+    Script web app sends through Gmail on the account that owns the script.
+    """
+    if not settings.email_api_url or not settings.email_api_secret:
+        raise HTTPException(
+            status_code=503,
+            detail="Email delivery is not configured yet. Please try again later.",
+        )
+
+    if not settings.email_api_url.startswith("https://script.google.com/macros/s/"):
+        logger.error("EMAIL_API_URL must be a Google Apps Script /exec URL")
+        raise HTTPException(status_code=503, detail="Email delivery is not configured correctly.")
+
+    payload = {
+        "secret": settings.email_api_secret,
+        "to": str(message["To"]),
+        "subject": str(message["Subject"]),
+        "body": message.get_content(),
+        "replyTo": str(message["Reply-To"]) if message.get("Reply-To") else "",
+    }
+    request = urllib.request.Request(
+        settings.email_api_url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+
     try:
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=15) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(settings.smtp_username, settings.smtp_password)
-            server.send_message(message)
-    except (OSError, smtplib.SMTPException):
-        logger.exception("Portfolio email delivery failed")
+        # Apps Script ContentService responds through a Google redirect; urllib
+        # follows that redirect and reads the final JSON response.
+        with urllib.request.urlopen(request, timeout=30) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        if not isinstance(result, dict) or result.get("success") is not True:
+            logger.error("Google Apps Script rejected an email request")
+            raise HTTPException(status_code=502, detail="Email delivery failed. Please try again later.")
+    except HTTPException:
+        raise
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError):
+        logger.exception("Portfolio email API request failed")
         raise HTTPException(status_code=502, detail="Email delivery failed. Please try again later.")
 
 
@@ -88,19 +120,19 @@ def send_contact_code(payload: ContactCodeRequest) -> dict[str, str]:
         raise HTTPException(status_code=429, detail="Too many verification requests. Please try again later.")
 
     code = f"{secrets.randbelow(1_000_000):06d}"
-    verification_codes[email] = {"code": code, "created": now, "attempts": 0}
-    code_requests[email] = recent + [now]
-
     message = EmailMessage()
     message["Subject"] = "Verify your email for Mebrie's portfolio"
-    message["From"] = settings.smtp_from_email
     message["To"] = email
     message.set_content(
         f"Your verification code is {code}.\n\n"
         "Enter this code on Mebrie's portfolio contact form to confirm that you own this email address. "
         "The code expires in 10 minutes. If you did not request it, ignore this email."
     )
+
+    # Only save the challenge and consume the rate limit after delivery succeeds.
     send_email(message)
+    verification_codes[email] = {"code": code, "created": now, "attempts": 0}
+    code_requests[email] = recent + [now]
     return {"message": "A verification code has been sent to your email address."}
 
 
@@ -124,7 +156,6 @@ def verify_and_send_contact(payload: ContactMessageRequest) -> dict[str, str]:
 
     message = EmailMessage()
     message["Subject"] = f"Portfolio message: {payload.subject.strip()}"
-    message["From"] = settings.smtp_from_email
     message["To"] = settings.contact_to_email
     message["Reply-To"] = email
     message.set_content(
