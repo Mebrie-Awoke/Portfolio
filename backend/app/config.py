@@ -5,8 +5,8 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
     cors_origins: str = "http://localhost:5173"
-    email_api_url: str = ""
-    email_api_secret: str = ""
+    resend_api_key: str = ""
+    email_from: str = "Portfolio <onboarding@resend.dev>"
     contact_to_email: str = "mebrieawoke941@gmail.com"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
