@@ -5,7 +5,7 @@ A full-stack personal portfolio with a React frontend and a FastAPI assistant.
 ## Structure
 
 - `frontend/` — React + Vite portfolio and chat interface
-- `backend/` — FastAPI API, portfolio retrieval, Groq responses, and verified contact form
+- `backend/` — FastAPI API, portfolio retrieval, Groq responses, and contact form
 - `backend/knowledge/profile.md` — CV-grounded knowledge used by the assistant
 - `backend/google-apps-script/Code.gs` — Gmail HTTPS email gateway
 
@@ -64,7 +64,7 @@ Set these Render environment variables:
 
 Health check: `/api/health`.
 
-## Verified contact form email setup
+## Contact form email setup
 
 Render free web services block outbound SMTP connections. The contact form therefore sends mail through a Google Apps Script HTTPS gateway, which uses Gmail on the Google account that owns the script. No custom domain is required.
 
@@ -83,4 +83,4 @@ Render free web services block outbound SMTP connections. The contact form there
 
 The Apps Script must be deployed from the Gmail account you want to send from. Keep the secret private. Apps Script and Gmail sending quotas apply.
 
-Verification codes expire after 10 minutes, allow up to five attempts, and requests are rate-limited. Challenges and rate limits are stored in process memory, so keep one API instance.
+The contact form sends messages directly without email verification. Add verification later if needed.
