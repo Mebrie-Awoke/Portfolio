@@ -2,7 +2,6 @@ import json
 import logging
 import urllib.error
 import urllib.request
-from email.message import EmailMessage
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Mebrie Awoke Portfolio API",
     description="Portfolio API with a retrieval-augmented assistant and contact form.",
-    version="1.4.0",
+    version="1.5.0",
 )
 
 app.add_middleware(
@@ -28,50 +27,58 @@ app.add_middleware(
 )
 
 
-
-def send_email(message: EmailMessage) -> None:
-    """Send mail through the Google Apps Script HTTPS gateway.
-
-    Render free web services cannot make outbound SMTP connections. The Apps
-    Script web app sends through Gmail on the account that owns the script.
-    """
-    if not settings.email_api_url or not settings.email_api_secret:
+def send_email(*, reply_to: str, subject: str, body: str) -> None:
+    """Send a contact email through Resend's HTTPS API."""
+    if not settings.resend_api_key:
+        logger.error("RESEND_API_KEY is not configured")
         raise HTTPException(
             status_code=503,
             detail="Email delivery is not configured yet. Please try again later.",
         )
 
-    if not settings.email_api_url.startswith("https://script.google.com/macros/s/"):
-        logger.error("EMAIL_API_URL must be a Google Apps Script /exec URL")
-        raise HTTPException(status_code=503, detail="Email delivery is not configured correctly.")
-
     payload = {
-        "secret": settings.email_api_secret,
-        "to": str(message["To"]),
-        "subject": str(message["Subject"]),
-        "body": message.get_content(),
-        "replyTo": str(message["Reply-To"]) if message.get("Reply-To") else "",
+        "from": settings.email_from,
+        "to": [settings.contact_to_email],
+        "reply_to": reply_to,
+        "subject": subject,
+        "text": body,
     }
     request = urllib.request.Request(
-        settings.email_api_url,
+        "https://api.resend.com/emails",
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {settings.resend_api_key}",
+            "Content-Type": "application/json",
+        },
         method="POST",
     )
 
     try:
-        # Apps Script ContentService responds through a Google redirect; urllib
-        # follows that redirect and reads the final JSON response.
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with urllib.request.urlopen(request, timeout=20) as response:
             result = json.loads(response.read().decode("utf-8"))
-        if not isinstance(result, dict) or result.get("success") is not True:
-            logger.error("Google Apps Script rejected an email request")
-            raise HTTPException(status_code=502, detail="Email delivery failed. Please try again later.")
+
+        if not isinstance(result, dict) or not result.get("id"):
+            logger.error("Resend returned an unexpected response")
+            raise HTTPException(
+                status_code=502,
+                detail="Email delivery failed. Please try again later.",
+            )
+    except urllib.error.HTTPError as exc:
+        # Do not log request headers or API keys.
+        error_body = exc.read().decode("utf-8", errors="replace")
+        logger.error("Resend API returned HTTP %s: %s", exc.code, error_body[:1000])
+        raise HTTPException(
+            status_code=502,
+            detail="Email delivery failed. Please check the email service configuration.",
+        ) from exc
     except HTTPException:
         raise
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError, json.JSONDecodeError):
-        logger.exception("Portfolio email API request failed")
-        raise HTTPException(status_code=502, detail="Email delivery failed. Please try again later.")
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+        logger.exception("Portfolio email request to Resend failed")
+        raise HTTPException(
+            status_code=502,
+            detail="Email delivery failed. Please try again later.",
+        )
 
 
 @app.get("/api/health")
@@ -106,16 +113,14 @@ def send_contact_message(payload: ContactMessageRequest) -> dict[str, str]:
         return {"message": "Your message has been submitted."}
 
     email = payload.email.strip().lower()
-    message = EmailMessage()
-    message["Subject"] = f"Portfolio message: {payload.subject.strip()}"
-    message["To"] = settings.contact_to_email
-    message["Reply-To"] = email
-    message.set_content(
+    subject = f"Portfolio message: {payload.subject.strip()}"
+    body = (
         "New message from your portfolio website.\n\n"
         f"Name: {payload.name.strip()}\n"
         f"Email: {email}\n"
         f"Subject: {payload.subject.strip()}\n\n"
         f"{payload.message.strip()}"
     )
-    send_email(message)
+
+    send_email(reply_to=email, subject=subject, body=body)
     return {"message": "Your message has been sent successfully."}
