@@ -59,8 +59,7 @@ function Assistant() {
    }
    setMessages(items=>[...items,{
     role:"assistant",
-    text:data.answer||"I couldn't generate an answer. Please try again.",
-    sources:Array.isArray(data.sources)?data.sources:[]
+    text:data.answer||"I couldn't generate an answer. Please try again."
    }]);
   }catch(error){
    setMessages(items=>[...items,{
@@ -88,10 +87,6 @@ function Assistant() {
    <div className="chat-messages" aria-live="polite" aria-relevant="additions">
     {messages.map((message,index)=><div key={index} className={"chat-message "+message.role}>
      <span>{message.text}</span>
-     {message.sources?.length>0&&<details className="chat-sources">
-      <summary>View {message.sources.length} retrieved source{message.sources.length===1?"":"s"}</summary>
-      {message.sources.map((source,sourceIndex)=><p key={sourceIndex}><b>{source.section}</b><br/>{source.excerpt}</p>)}
-     </details>}
     </div>)}
     {loading&&<div className="chat-message assistant">Thinking…</div>}
    </div>
