@@ -51,6 +51,6 @@ class ContactMessageRequest(BaseModel):
     @classmethod
     def validate_email(cls, value: str) -> str:
         value = value.strip()
-        if not re.fullmatch(r"[^\\s@]+@[^\\s@]+\\.[^\\s@]+", value):
+        if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", value):
             raise ValueError("Enter a valid email address.")
         return value
