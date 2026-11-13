@@ -8,8 +8,8 @@ A full-stack personal portfolio built with **React + Vite** and **FastAPI**. It 
 - Projects, skills, experience, and contact sections
 - AI portfolio assistant powered by Groq
 - Retrieval-augmented answers grounded in portfolio information
-- Direct contact form submission — visitors can send a message without email verification
-- Gmail delivery through a Google Apps Script HTTPS gateway
+- Contact form with a hidden honeypot field for basic spam filtering
+- Transactional email delivery through the Resend HTTPS API
 
 ## Tech stack
 
@@ -18,7 +18,7 @@ A full-stack personal portfolio built with **React + Vite** and **FastAPI**. It 
 | Frontend | React, Vite, JavaScript, CSS |
 | Backend | Python, FastAPI, Pydantic |
 | AI assistant | Groq API, lightweight retrieval |
-| Email delivery | Google Apps Script, Gmail |
+| Email delivery | Resend API |
 | Deployment | Vercel (frontend), Render (backend) |
 
 ## Repository structure
@@ -31,8 +31,6 @@ A full-stack personal portfolio built with **React + Vite** and **FastAPI**. It 
 │   │   ├── config.py
 │   │   ├── schemas.py
 │   │   └── rag.py
-│   ├── google-apps-script/
-│   │   └── Code.gs
 │   ├── knowledge/
 │   │   └── profile.md
 │   ├── .env.example
@@ -57,7 +55,7 @@ Activate the environment:
 
 ```powershell
 # Windows
-.venv\Scripts\Activate.ps1
+.venv\\Scripts\\Activate.ps1
 ```
 
 ```bash
@@ -112,7 +110,7 @@ npm run dev
 
 ### Contact form
 
-The contact form does **not** require email verification. A visitor submits their name, email address, subject, and message. The backend validates the fields and sends the message to the configured inbox. The visitor's email is included as the reply-to address.
+The contact form does **not** require email verification. A visitor submits their name, email address, subject, and message. The backend sends the message to the configured inbox using Resend. The visitor's email is included as the reply-to address.
 
 Example request:
 
@@ -162,26 +160,20 @@ Configure these environment variables in Render:
 | `GROQ_API_KEY` | Groq API key for the AI assistant |
 | `GROQ_MODEL` | Model name, e.g. `llama-3.3-70b-versatile` |
 | `CORS_ORIGINS` | Deployed frontend origin, e.g. `https://mebrieawoke.vercel.app` |
-| `EMAIL_API_URL` | Deployed Google Apps Script web app URL ending in `/exec` |
-| `EMAIL_API_SECRET` | Secret shared with the Apps Script deployment |
+| `RESEND_API_KEY` | API key created in the Resend dashboard |
+| `EMAIL_FROM` | Verified sender, e.g. `Portfolio <hello@yourdomain.com>` |
 | `CONTACT_TO_EMAIL` | Inbox that receives contact messages |
 
-### Gmail HTTPS email gateway
+### Configure Resend
 
-Render free web services block outbound SMTP connections. Email is therefore sent through a Google Apps Script HTTPS web app, which uses Gmail on the account that owns the script. A custom domain is not required.
+1. Create an account at [Resend](https://resend.com/).
+2. Open **API Keys** and create an API key. Add it to Render as `RESEND_API_KEY`.
+3. For an initial test, leave `EMAIL_FROM` as `Portfolio <onboarding@resend.dev>`. Resend's test sender only allows delivery to the email address associated with your Resend account.
+4. To receive messages from all portfolio visitors, add a domain you own in the Resend dashboard and complete its DNS verification. Then set `EMAIL_FROM` to an address on that verified domain, for example `Portfolio <hello@yourdomain.com>`.
+5. Set `CONTACT_TO_EMAIL` to the inbox where you want to receive messages.
+6. Save the Render environment variables. Render will redeploy the backend.
 
-1. Sign in to [Google Apps Script](https://script.google.com/) using the Gmail account that should send the messages.
-2. Create a project and paste the contents of `backend/google-apps-script/Code.gs` into its `Code.gs` file.
-3. In **Project Settings → Script Properties**, add `EMAIL_API_SECRET` with a long random value (at least 32 characters).
-4. Select **Deploy → New deployment → Web app**.
-5. Set **Execute as** to **Me** and **Who has access** to **Anyone**.
-6. Authorize the requested Gmail permissions and deploy the web app.
-7. Copy the deployment URL ending in `/exec`.
-8. Set `EMAIL_API_URL` and the same `EMAIL_API_SECRET` in Render.
-9. Set `CONTACT_TO_EMAIL` to the inbox where portfolio messages should arrive.
-10. Save the Render environment variables and redeploy the backend.
-
-Keep the secret private. Do not commit it to the repository or expose it in frontend code. Apps Script and Gmail sending quotas apply.
+Keep the API key private. Never put it in frontend code or commit it to GitHub. The backend calls Resend over HTTPS, so no SMTP configuration is needed.
 
 ## Health check
 
