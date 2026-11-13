@@ -106,49 +106,40 @@ function Assistant() {
 }
 
 function ContactForm(){
- const [values,setValues]=useState({name:"",email:"",subject:"",message:"",code:"",website:""});
- const [stage,setStage]=useState("details");
+ const [values,setValues]=useState({name:"",email:"",subject:"",message:"",website:""});
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState("");
  const [error,setError]=useState("");
- const api=async(path,body)=>{
-  const response=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-  const data=await response.json().catch(()=>({}));
-  if(!response.ok)throw new Error(data.detail||"Something went wrong. Please try again.");
-  return data;
- };
+ async function submit(event){
+  event.preventDefault();
+  if(busy)return;
+  setBusy(true);setError("");setNotice("");
+  try{
+   const response=await fetch(API+"/api/contact/send",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(values)
+   });
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(data.detail||"Something went wrong. Please try again.");
+   setValues({name:"",email:"",subject:"",message:"",website:""});
+   setNotice(data.message||"Your message has been sent successfully.");
+  }catch(err){setError(err.message||"Unable to send your message. Please try again.");}
+  finally{setBusy(false);}
+ }
  const change=event=>setValues(current=>({...current,[event.target.name]:event.target.value}));
- async function requestCode(event){
-  event.preventDefault();setBusy(true);setError("");setNotice("");
-  try{const result=await api("/api/contact/send-code",{email:values.email,website:values.website});setStage("verify");setNotice(result.message||"Check your inbox for the verification code.");}
-  catch(err){setError(err.message);}
-  finally{setBusy(false);}
- }
- async function verifyAndSend(event){
-  event.preventDefault();setBusy(true);setError("");setNotice("");
-  try{const result=await api("/api/contact/verify-and-send",values);setStage("sent");setNotice(result.message||"Your message has been sent.");}
-  catch(err){setError(err.message);}
-  finally{setBusy(false);}
- }
  return <div className="contact-form-card">
-  {stage==="sent"?<div className="contact-success"><div className="success-mark">✓</div><h3>Message sent.</h3><p>Thanks for reaching out. Your verified message has been delivered to my inbox.</p><button type="button" className="form-secondary" onClick={()=>{setValues({name:"",email:"",subject:"",message:"",code:"",website:""});setStage("details");setNotice("");}}>Send another message</button></div>:<>
-   <div className="form-heading"><span>LET'S CONNECT</span><h3>{stage==="verify"?"Verify your email":"Send me a message"}</h3><p>{stage==="verify"?"Enter the 6-digit code sent to "+values.email+".":"Your email will be verified before your message is delivered."}</p></div>
-   {stage==="details"?<form onSubmit={requestCode} className="contact-form">
-    <label>Your name<input name="name" value={values.name} onChange={change} required minLength={2} maxLength={100} placeholder="Your name"/></label>
-    <label>Email address<input name="email" type="email" value={values.email} onChange={change} required maxLength={254} placeholder="you@example.com"/></label>
-    <label>Subject<input name="subject" value={values.subject} onChange={change} required minLength={2} maxLength={150} placeholder="What is this about?"/></label>
-    <label>Message<textarea name="message" value={values.message} onChange={change} required minLength={10} maxLength={5000} rows={5} placeholder="Tell me a little about it…"/></label>
-    <label className="honeypot" aria-hidden="true">Leave this field empty<input name="website" value={values.website} onChange={change} tabIndex={-1} autoComplete="off"/></label>
-    <button className="primary-button form-submit" disabled={busy}>{busy?"Sending code…":<>Verify email & continue <ArrowUpRight size={16}/></>}</button>
-   </form>:<form onSubmit={verifyAndSend} className="contact-form">
-    <label>6-digit verification code<input name="code" value={values.code} onChange={change} required inputMode="numeric" pattern="[0-9]{6}" minLength={6} maxLength={6} placeholder="000000"/></label>
-    <p className="verification-hint">The code expires in 10 minutes. Check your spam folder if you don't see it.</p>
-    <button className="primary-button form-submit" disabled={busy||values.code.length!==6}>{busy?"Verifying & sending…":<>Verify & send message <Send size={16}/></>}</button>
-    <button type="button" className="form-secondary" onClick={()=>{setStage("details");setValues(current=>({...current,code:""}));setError("");setNotice("");}}>Back to edit message</button>
-   </form>}
-   {notice&&<p className="form-notice" role="status">{notice}</p>}
-   {error&&<p className="form-error" role="alert">{error}</p>}
-  </>}
+  <div className="form-heading"><span>LET'S CONNECT</span><h3>Send me a message</h3><p>Have a project, opportunity, or idea? Send me a message and I'll get back to you.</p></div>
+  <form onSubmit={submit} className="contact-form">
+   <label>Your name<input name="name" value={values.name} onChange={change} required minLength={2} maxLength={100} placeholder="Your name"/></label>
+   <label>Email address<input name="email" type="email" value={values.email} onChange={change} required maxLength={254} placeholder="you@example.com"/></label>
+   <label>Subject<input name="subject" value={values.subject} onChange={change} required minLength={2} maxLength={150} placeholder="What is this about?"/></label>
+   <label>Message<textarea name="message" value={values.message} onChange={change} required minLength={10} maxLength={5000} rows={5} placeholder="Tell me a little about it…"/></label>
+   <label className="honeypot" aria-hidden="true">Leave this field empty<input name="website" value={values.website} onChange={change} tabIndex={-1} autoComplete="off"/></label>
+   <button className="primary-button form-submit" disabled={busy}>{busy?"Sending…":<>Send message <Send size={16}/></>}</button>
+  </form>
+  {notice&&<p className="form-notice" role="status">{notice}</p>}
+  {error&&<p className="form-error" role="alert">{error}</p>}
  </div>;
 }
 
