@@ -158,3 +158,15 @@ a{color:inherit;text-decoration:none}
 .more-description{font-size:13px;line-height:1.7;color:var(--muted);margin:0 auto 22px}
 .more-link{display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font-size:12px;font-weight:700;transition:background .2s,border-color .2s,transform .2s}
 .more-link:hover{background:var(--surface-soft);border-color:var(--accent);transform:translateY(-2px)}
+
+
+/* Clean formatting for AI assistant answers */
+.chat-message.assistant{white-space:normal}
+.assistant-content{display:flex;flex-direction:column;gap:7px;overflow-wrap:anywhere}
+.assistant-content p{margin:0}
+.assistant-content strong{font-weight:700;color:var(--text)}
+.assistant-content .chat-heading{font-weight:700;font-size:1.04em;margin-top:5px}
+.assistant-content .chat-list-item{display:grid;grid-template-columns:12px minmax(0,1fr);gap:5px;align-items:start;padding-left:2px}
+.assistant-content .chat-list-item>span:first-child{color:var(--accent);font-weight:700}
+.assistant-content .chat-list-item.numbered{grid-template-columns:19px minmax(0,1fr)}
+.assistant-content .chat-line-space{height:3px}
