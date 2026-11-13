@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Mebrie Awoke Portfolio API",
     description="Portfolio API with a retrieval-augmented assistant and contact form.",
-    version="1.5.0",
+    version="1.5.1",
 )
 
 app.add_middleware(
@@ -49,6 +49,8 @@ def send_email(*, reply_to: str, subject: str, body: str) -> None:
         headers={
             "Authorization": f"Bearer {settings.resend_api_key}",
             "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "MebriePortfolio/1.5.1 (contact-form)",
         },
         method="POST",
     )
