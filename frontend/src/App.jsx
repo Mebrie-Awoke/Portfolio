@@ -2,6 +2,32 @@ import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUpRight, Bot, FileDown, BrainCircuit, BriefcaseBusiness, Code2, Github, GraduationCap, Mail, Linkedin, Menu, MessageCircle, Send, Sparkles, X, Zap, Sun, Moon } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+// Render the assistant's Markdown-style text as clean, readable chat content.
+function formatInline(text) {
+ return text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g).filter(Boolean).map((part,index)=>{
+  if ((part.startsWith("**") && part.endsWith("**")) || (part.startsWith("__") && part.endsWith("__"))) {
+   return <strong key={index}>{part.slice(2,-2)}</strong>;
+  }
+  return part.replace(/\*/g, "");
+ });
+}
+
+function AssistantText({text}) {
+ const lines=text.split(/\r?\n/);
+ return <div className="assistant-content">{lines.map((line,index)=>{
+  const trimmed=line.trim();
+  if(!trimmed)return <div className="chat-line-space" key={index}/>;
+  const heading=trimmed.match(/^#{1,6}\s+(.+)$/);
+  if(heading)return <p className="chat-heading" key={index}>{formatInline(heading[1])}</p>;
+  const bullet=trimmed.match(/^[-*+]\s+(.+)$/);
+  if(bullet)return <div className="chat-list-item" key={index}><span aria-hidden="true">•</span><span>{formatInline(bullet[1])}</span></div>;
+  const numbered=trimmed.match(/^\d+[.)]\s+(.+)$/);
+  if(numbered)return <div className="chat-list-item numbered" key={index}><span>{trimmed.match(/^\d+/)[0]}.</span><span>{formatInline(numbered[1])}</span></div>;
+  return <p key={index}>{formatInline(trimmed.replace(/^#{1,6}\s*/, "").replace(/^\*\s*/, ""))}</p>;
+ })}</div>;
+}
+
 const skills = [
  ["Programming","Python","JavaScript","SQL","Java","C++","HTML5","CSS3"],
  ["AI / ML","PyTorch","scikit-learn","Deep Learning","CNNs","Transfer Learning"],
@@ -86,7 +112,7 @@ function Assistant() {
    </div>
    <div className="chat-messages" aria-live="polite" aria-relevant="additions">
     {messages.map((message,index)=><div key={index} className={"chat-message "+message.role}>
-     <span>{message.text}</span>
+     {message.role==="assistant"?<AssistantText text={message.text}/>:<span>{message.text}</span>}
     </div>)}
     {loading&&<div className="chat-message assistant">Thinking…</div>}
    </div>
@@ -140,8 +166,8 @@ function ContactForm(){
 
 export default function App(){
  const [menu,setMenu]=useState(false);
- const [theme,setTheme]=useState(()=>localStorage.getItem("portfolio-theme")||"light");
- useEffect(()=>{localStorage.setItem("portfolio-theme",theme);},[theme]);
+ const [theme,setTheme]=useState(()=>localStorage.getItem("portfolio-theme-v2")||"light");
+ useEffect(()=>{localStorage.setItem("portfolio-theme-v2",theme);},[theme]);
  const nav=["About","Skills","Projects","Experience","Contact"];
  return <div className="site-shell" data-theme={theme}>
   <header className="topbar"><a className="brand" href="#home" aria-label="Mebrie Awoke home"><img className="brand-photo" src="/mebrie-profile.jpg" alt=""/><span>MA.</span></a><button className="theme-toggle" onClick={()=>setTheme(value=>value==="light"?"dark":"light")} aria-label={theme==="light"?"Switch to dark mode":"Switch to light mode"} title={theme==="light"?"Switch to dark mode":"Switch to light mode"}>{theme==="light"?<Moon size={18}/>:<Sun size={18}/>}</button><button className="mobile-menu" onClick={()=>setMenu(!menu)} aria-label="Toggle navigation" aria-expanded={menu}>{menu?<X/>:<Menu/>}</button><nav className={menu?"nav-links show":"nav-links"}>{nav.map(n=><a key={n} href={"#"+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a className="nav-cta" href="#contact">Let's talk <ArrowUpRight size={15}/></a></nav></header>
